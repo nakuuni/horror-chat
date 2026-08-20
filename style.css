@@ -1,0 +1,268 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #111;
+    color: #eee;
+    font-family: sans-serif;
+    height: 100vh;
+}
+
+.chat {
+    width: 100%;
+    max-width: 500px;
+    height: 100vh;
+    margin: auto;
+    background: #181818;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 上部 */
+header {
+    background: #080808;
+    padding: 15px;
+    border-bottom: 1px solid #333;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.status {
+    font-size: 11px;
+    color: #777;
+    margin-top: 4px;
+}
+
+/* メッセージ部分 */
+main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 12px;
+}
+
+/* メッセージ */
+.message {
+    max-width: 80%;
+    padding: 11px 14px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* システム側 */
+.message.system {
+    background: #292929;
+    margin-right: auto;
+}
+
+/* 客側 */
+.message.user {
+    background: #333;
+    margin-left: auto;
+}
+
+/* 入力欄 */
+footer {
+    display: flex;
+    padding: 10px;
+    background: #080808;
+    border-top: 1px solid #333;
+}
+
+#input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #222;
+    color: white;
+    outline: none;
+}
+
+#send {
+    margin-left: 8px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px;
+    background: #444;
+    color: white;
+    font-weight: bold;
+}
+
+#send:active {
+    background: #666;
+}
+
+/* ========================================
+   ホラー演出
+   ======================================== */
+
+@keyframes horrorShake {
+
+    0% {
+        transform: translate(0, 0);
+    }
+
+    10% {
+        transform: translate(-2px, 1px);
+    }
+
+    20% {
+        transform: translate(1px, -2px);
+    }
+
+    30% {
+        transform: translate(-3px, 0);
+    }
+
+    40% {
+        transform: translate(2px, 1px);
+    }
+
+    50% {
+        transform: translate(-1px, -1px);
+    }
+
+    60% {
+        transform: translate(3px, 2px);
+    }
+
+    70% {
+        transform: translate(-2px, -1px);
+    }
+
+    80% {
+        transform: translate(1px, 2px);
+    }
+
+    90% {
+        transform: translate(-1px, 0);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+.horror-shake {
+
+    animation: horrorShake 0.18s infinite;
+
+}
+
+
+/* ========================================
+   一瞬の暗転
+   ======================================== */
+
+@keyframes blackout {
+
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.9;
+    }
+
+    100% {
+        opacity: 0;
+    }
+
+}
+
+
+.blackout {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: #000;
+
+    z-index: 1900;
+
+    pointer-events: none;
+
+    animation: blackout 0.3s;
+
+}
+
+
+/* ========================================
+   ミツケタ専用画面
+   ======================================== */
+
+.found-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: #000;
+
+    z-index: 2000;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+
+/* ========================================
+   ミツケタの文字
+   ======================================== */
+
+.found-letter {
+
+    font-family:
+        "Yu Mincho",
+        "Hiragino Mincho ProN",
+        "Noto Serif JP",
+        serif;
+
+    font-size: 90px;
+
+    font-weight: normal;
+
+    color: #8b0000;
+
+    text-shadow:
+        0 0 8px #5a0000,
+        0 0 20px #300000;
+
+    animation: foundAppear 0.15s ease-out;
+
+}
+
+
+@keyframes foundAppear {
+
+    0% {
+
+        opacity: 0;
+
+        transform: scale(1.3);
+
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform: scale(1);
+
+    }
+
+}
