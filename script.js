@@ -5,46 +5,6 @@ const status = document.getElementById("status");
 
 
 // ========================================
-// 効果音
-// ========================================
-
-const messageSound = new Audio("sounds/message.mp3");
-const ghostSound = new Audio("sounds/ghost.mp3");
-
-// 通知音は少し控えめ
-messageSound.volume = 0.5;
-
-// お化けの音は最大
-ghostSound.volume = 1.0;
-
-
-// ========================================
-// 通知音
-// ========================================
-
-function playMessageSound() {
-
-    messageSound.currentTime = 0;
-
-    messageSound.play().catch(() => {});
-
-}
-
-
-// ========================================
-// お化け出現音
-// ========================================
-
-function playGhostSound() {
-
-    ghostSound.currentTime = 0;
-
-    ghostSound.play().catch(() => {});
-
-}
-
-
-// ========================================
 // メッセージを追加
 // ========================================
 
@@ -65,9 +25,41 @@ function addMessage(text, type) {
     // システムメッセージなら通知音
     if (type === "system") {
 
-        playMessageSound();
+        const audio = new Audio("sounds/message.mp3");
 
+        audio.volume = 0.8;
+
+        audio.play().catch(() => {});
     }
+}
+
+
+// ========================================
+// 赤文字メッセージ
+// ========================================
+
+function addRedMessage(text) {
+
+    const message = document.createElement("div");
+
+    message.classList.add("message");
+    message.classList.add("system");
+
+    message.textContent = text;
+
+    message.style.color = "red";
+    message.style.fontWeight = "bold";
+
+    messages.appendChild(message);
+
+    messages.scrollTop = messages.scrollHeight;
+
+
+    const audio = new Audio("sounds/message.mp3");
+
+    audio.volume = 0.8;
+
+    audio.play().catch(() => {});
 }
 
 
@@ -99,60 +91,6 @@ function addImage(src, type) {
 
 
 // ========================================
-// URL付きメッセージ
-// ========================================
-
-function addLinkMessage(text, url) {
-
-    const message = document.createElement("div");
-
-    message.classList.add("message");
-    message.classList.add("system");
-
-
-    const textElement = document.createElement("div");
-
-    textElement.textContent = text;
-
-
-    const link = document.createElement("a");
-
-    link.href = url;
-
-    link.textContent = url;
-
-    link.target = "_blank";
-
-    link.rel = "noopener noreferrer";
-
-
-    // URLの見た目
-    link.style.color = "#4da6ff";
-
-    link.style.textDecoration = "underline";
-
-    link.style.display = "block";
-
-    link.style.marginTop = "6px";
-
-
-    message.appendChild(textElement);
-
-    message.appendChild(link);
-
-
-    messages.appendChild(message);
-
-    messages.scrollTop = messages.scrollHeight;
-
-
-    // 通知音
-    playMessageSound();
-
-}
-
-
-// ========================================
 // 画面を揺らす
 // ========================================
 
@@ -161,18 +99,10 @@ function shakeScreen() {
     const chat = document.querySelector(".chat");
 
     if (!chat) {
-
         return;
-
     }
 
-
-    chat.classList.remove("horror-shake");
-
-    void chat.offsetWidth;
-
     chat.classList.add("horror-shake");
-
 }
 
 
@@ -180,24 +110,20 @@ function shakeScreen() {
 // 画面の揺れを止める
 // ========================================
 
-function stopShake() {
+function stopShakeScreen() {
 
     const chat = document.querySelector(".chat");
 
     if (!chat) {
-
         return;
-
     }
 
-
     chat.classList.remove("horror-shake");
-
 }
 
 
 // ========================================
-// 一瞬暗くする
+// 一瞬暗転
 // ========================================
 
 function blackoutScreen() {
@@ -208,13 +134,11 @@ function blackoutScreen() {
 
     document.body.appendChild(blackout);
 
-
     setTimeout(() => {
 
         blackout.remove();
 
     }, 300);
-
 }
 
 
@@ -227,7 +151,6 @@ function showFoundMessage(letter) {
     let screen = document.getElementById("foundScreen");
 
 
-    // 黒画面がなければ作成
     if (!screen) {
 
         screen = document.createElement("div");
@@ -237,11 +160,9 @@ function showFoundMessage(letter) {
         screen.classList.add("found-screen");
 
         document.body.appendChild(screen);
-
     }
 
 
-    // 前の文字を消す
     screen.innerHTML = "";
 
 
@@ -251,26 +172,7 @@ function showFoundMessage(letter) {
 
     letterElement.textContent = letter;
 
-
     screen.appendChild(letterElement);
-
-}
-
-
-// ========================================
-// 「ミツケタ」画面を消す
-// ========================================
-
-function hideFoundScreen() {
-
-    const screen = document.getElementById("foundScreen");
-
-    if (screen) {
-
-        screen.remove();
-
-    }
-
 }
 
 
@@ -281,9 +183,7 @@ function hideFoundScreen() {
 function showPhotoButton() {
 
     if (document.getElementById("photoButton")) {
-
         return;
-
     }
 
 
@@ -295,19 +195,12 @@ function showPhotoButton() {
 
 
     button.style.display = "block";
-
     button.style.margin = "10px auto";
-
     button.style.padding = "12px 20px";
-
     button.style.border = "none";
-
     button.style.borderRadius = "10px";
-
     button.style.background = "#444";
-
     button.style.color = "white";
-
     button.style.fontSize = "16px";
 
 
@@ -322,7 +215,10 @@ function showPhotoButton() {
     fileInput.style.display = "none";
 
 
-    // ボタンを押したらカメラ・写真選択
+    // ====================================
+    // 写真ボタン
+    // ====================================
+
     button.addEventListener("click", function() {
 
         fileInput.click();
@@ -330,21 +226,21 @@ function showPhotoButton() {
     });
 
 
-    // 写真選択
+    // ====================================
+    // 写真を選択
+    // ====================================
+
     fileInput.addEventListener("change", function() {
 
         const file = fileInput.files[0];
 
-
         if (!file) {
-
             return;
-
         }
 
 
         // ====================================
-        // 客が送った写真を表示
+        // 客が送った写真
         // ====================================
 
         const imageURL = URL.createObjectURL(file);
@@ -355,7 +251,6 @@ function showPhotoButton() {
         );
 
 
-        // ボタンを削除
         button.remove();
 
         fileInput.remove();
@@ -368,8 +263,7 @@ function showPhotoButton() {
         setTimeout(() => {
 
             addMessage(
-                "画像を確認した。\n"
-                + "その部屋にしばらく留まっておけ。",
+                "画像を確認した。\nその部屋にしばらく留まっておけ。",
                 "system"
             );
 
@@ -383,31 +277,21 @@ function showPhotoButton() {
 
         setTimeout(() => {
 
-
-            // --------------------------------
             // OFFLINE
-            // --------------------------------
-
             status.textContent = "● OFFLINE";
 
 
-            // --------------------------------
-            // 画面を揺らす
-            // --------------------------------
-
+            // 揺れ開始
             shakeScreen();
 
 
-            // --------------------------------
-            // 一瞬暗くする
-            // --------------------------------
-
+            // 一瞬暗転
             blackoutScreen();
 
 
-            // --------------------------------
+            // ====================================
             // 文字化け①
-            // --------------------------------
+            // ====================================
 
             addMessage(
                 "縺薙�縺ｮ縺ｧ……",
@@ -415,9 +299,10 @@ function showPhotoButton() {
             );
 
 
-            // --------------------------------
+            // ====================================
+            // 文字化け②
             // 1秒後
-            // --------------------------------
+            // ====================================
 
             setTimeout(() => {
 
@@ -429,9 +314,10 @@ function showPhotoButton() {
             }, 1000);
 
 
-            // --------------------------------
-            // 2秒後
-            // --------------------------------
+            // ====================================
+            // 文字化け③
+            // 0.8秒後
+            // ====================================
 
             setTimeout(() => {
 
@@ -440,12 +326,13 @@ function showPhotoButton() {
                     "system"
                 );
 
-            }, 2000);
+            }, 1800);
 
 
-            // --------------------------------
-            // 3秒後
-            // --------------------------------
+            // ====================================
+            // 文字化け④
+            // 0.6秒後
+            // ====================================
 
             setTimeout(() => {
 
@@ -454,12 +341,13 @@ function showPhotoButton() {
                     "system"
                 );
 
-            }, 3000);
+            }, 2400);
 
 
-            // --------------------------------
-            // 4秒後
-            // --------------------------------
+            // ====================================
+            // 文字化け⑤
+            // 0.4秒後
+            // ====================================
 
             setTimeout(() => {
 
@@ -468,23 +356,56 @@ function showPhotoButton() {
                     "system"
                 );
 
-            }, 4000);
+            }, 2800);
 
 
             // ====================================
-            // 7秒後
+            // ここから0.2秒間隔
+            // ====================================
+
+            setTimeout(() => {
+
+                addMessage(
+                    "縺ｪ縺ｾ縺ｨ縺九￥",
+                    "system"
+                );
+
+            }, 3200);
+
+
+            setTimeout(() => {
+
+                addMessage(
+                    "繧ゅ≧縺ｿ縺ｦ",
+                    "system"
+                );
+
+            }, 3600);
+
+
+            setTimeout(() => {
+
+                addMessage(
+                    "縺ｿ縺､縺代◆",
+                    "system"
+                );
+
+            }, 3800);
+
+
+            // ====================================
             // ミ
+            // 最後の文字化けから1秒後
             // ====================================
 
             setTimeout(() => {
 
                 showFoundMessage("ミ");
 
-            }, 7000);
+            }, 4400);
 
 
             // ====================================
-            // 8秒後
             // ツ
             // ====================================
 
@@ -492,11 +413,10 @@ function showPhotoButton() {
 
                 showFoundMessage("ツ");
 
-            }, 8000);
+            }, 5400);
 
 
             // ====================================
-            // 9秒後
             // ケ
             // ====================================
 
@@ -504,11 +424,10 @@ function showPhotoButton() {
 
                 showFoundMessage("ケ");
 
-            }, 9000);
+            }, 6400);
 
 
             // ====================================
-            // 10秒後
             // タ
             // ====================================
 
@@ -516,96 +435,138 @@ function showPhotoButton() {
 
                 showFoundMessage("タ");
 
-
-                // 「タ」が出た瞬間に
-                // 揺れを停止
-
-                stopShake();
-
-            }, 10000);
+            }, 7400);
 
 
             // ====================================
-            // 11秒後
-            // お化け出現音
+            // 「タ」の1秒後
+            // お化けの音
             // ====================================
 
             setTimeout(() => {
 
-                playGhostSound();
+                const ghostAudio =
+                    new Audio("sounds/ghost.mp3");
 
-            }, 11000);
+                ghostAudio.volume = 1.0;
+
+                ghostAudio.play().catch(() => {});
+
+            }, 8400);
 
 
             // ====================================
-            // 20秒後
-            // 「タ」から10秒
+            // 「タ」から10秒後
+            // チャット画面へ戻る
             // ====================================
 
             setTimeout(() => {
 
-
-                // 黒画面を消す
-
-                hideFoundScreen();
+                // 揺れ停止
+                stopShakeScreen();
 
 
-                // ONLINEに戻す
+                // 黒画面削除
+                const screen =
+                    document.getElementById("foundScreen");
 
+                if (screen) {
+                    screen.remove();
+                }
+
+
+                // ONLINE
                 status.textContent = "● ONLINE";
 
 
+                // 空白を入れる
+                const spacer = document.createElement("div");
+
+                spacer.style.height = "40px";
+
+                messages.appendChild(spacer);
+
+
+                // 再接続メッセージ
                 addMessage(
                     "再接続できたようだ。",
                     "system"
                 );
 
-            }, 20000);
+            }, 17400);
 
 
             // ====================================
-            // 21秒後
-            // ====================================
-
-            setTimeout(() => {
-
-                addMessage(
-                    "間取り図の全体を送る。",
-                    "system"
-                );
-
-            }, 21000);
-
-
-            // ====================================
-            // 22秒後
-            // 全体図
-            // ====================================
-
-            setTimeout(() => {
-
-                addImage(
-                    "images/full_map.png",
-                    "system"
-                );
-
-            }, 22000);
-
-
-            // ====================================
-            // 23秒後
-            // 脱出指示
+            // 再接続後①
             // ====================================
 
             setTimeout(() => {
 
                 addMessage(
-                    "脱出するんだ。成功したら「脱出成功」と送れ。",
+                    "協力に感謝する。",
                     "system"
                 );
 
-            }, 23000);
+            }, 19400);
 
+
+            // ====================================
+            // 再接続後②
+            // ====================================
+
+            setTimeout(() => {
+
+                addMessage(
+                    "ただ家主に見つかってしまったようだな。",
+                    "system"
+                );
+
+            }, 21400);
+
+
+            // ====================================
+            // 再接続後③
+            // ====================================
+
+            setTimeout(() => {
+
+                const message = document.createElement("div");
+
+                message.classList.add("message");
+                message.classList.add("system");
+
+                message.innerHTML =
+                    "<strong style='color:#ff3333;'>生きて帰れたら</strong>報酬を渡そう。";
+
+                messages.appendChild(message);
+
+                messages.scrollTop = messages.scrollHeight;
+
+            }, 23400);
+
+
+            // ====================================
+            // 再接続後④
+            // ====================================
+
+            setTimeout(() => {
+
+                const message = document.createElement("div");
+
+                message.classList.add(
+                    "message",
+                    "system",
+                    "disconnect-message"
+                );
+
+                message.textContent =
+                    "――匿名さんの接続が切れました――";
+
+                messages.appendChild(message);
+
+                messages.scrollTop = messages.scrollHeight;
+
+            }, 25400);
 
         }, 5000);
 
@@ -615,7 +576,6 @@ function showPhotoButton() {
     messages.appendChild(button);
 
     messages.scrollTop = messages.scrollHeight;
-
 }
 
 
@@ -627,32 +587,30 @@ function enteredRoom() {
 
 
     // ====================================
-    // 1.5秒後
+    // 1秒後
     // ====================================
 
     setTimeout(() => {
-
-        addMessage(
-            "この部屋を調査しろ。",
-            "system"
-        );
-
-    }, 1500);
-
-
-    // ====================================
-    // 3.5秒後
-    // 部屋の間取り図
-    // ====================================
-
-    setTimeout(() => {
-
         addImage(
-            "images/room_map.png",
+            "images/full_map.png",
             "system"
         );
 
-    }, 3500);
+    }, 1000);
+
+
+    // ====================================
+    // 3秒後
+    // ====================================
+
+    setTimeout(() => {
+        addMessage(
+            "この館の間取り図だ。",
+            "system"
+        );
+        
+
+    }, 3000);
 
 
     // ====================================
@@ -662,15 +620,13 @@ function enteredRoom() {
     setTimeout(() => {
 
         addMessage(
-            "この部屋で見つけたものの画像を送れ。",
+            "どこかにある日記の写真を送ってくれ。",
             "system"
         );
-
 
         showPhotoButton();
 
     }, 5000);
-
 }
 
 
@@ -682,33 +638,35 @@ function sendMessage() {
 
     const text = input.value.trim();
 
-
-    // 空欄
     if (text === "") {
-
         return;
-
     }
 
 
-    // ====================================
     // 客のメッセージ
-    // ====================================
-
     addMessage(
         text,
         "user"
     );
-
 
     input.value = "";
 
 
     // ====================================
     // 「入った」
+    // 「はいった」
     // ====================================
 
-    if (text === "入った") {
+    const normalizedText =
+        text
+            .replace(/\s/g, "")
+            .toLowerCase();
+
+
+    if (
+        normalizedText === "入った" ||
+        normalizedText === "はいった"
+    ) {
 
         enteredRoom();
 
@@ -716,53 +674,104 @@ function sendMessage() {
 
 
     // ====================================
-    // 「脱出」
+    // 「脱出成功」
     // ====================================
 
     if (text === "脱出成功") {
 
 
-        // --------------------------------
+        // ====================================
         // 1秒後
-        // --------------------------------
+        // ====================================
 
         setTimeout(() => {
 
             addMessage(
-                "脱出を確認した。",
+                "脱出おめでとう！",
                 "system"
             );
 
         }, 1000);
 
 
-        // --------------------------------
-        // 2.5秒後
-        // --------------------------------
+        // ====================================
+        // 3秒後
+        // 全体図
+        // ====================================
+
+        // ====================================
+        // 7秒後
+        // ====================================
 
         setTimeout(() => {
 
             addMessage(
-                "おめでとう。\n無事に脱出した。",
+                "クラ発投票お願いします！",
                 "system"
             );
 
-        }, 2500);
+        }, 3000);
 
 
-        // --------------------------------
-        // 4秒後
-        // URL
-        // --------------------------------
+        // 投票URL
+// ====================================
 
         setTimeout(() => {
 
-            addLinkMessage(
-                "クラ発投票お願いします！",
-                "https://example.com"
-            );
+            const message = document.createElement("div");
+
+            message.classList.add("message");
+            message.classList.add("system");
+
+            const link = document.createElement("a");
+
+            link.href = "https://example.com";
+            link.textContent = "クラ発の投票はこちら";
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+
+            link.style.color = "#4da6ff";
+            link.style.textDecoration = "underline";
+
+            message.appendChild(link);
+
+            messages.appendChild(message);
+
+            messages.scrollTop = messages.scrollHeight;
 
         }, 4000);
+
+
+        // ====================================
+        // 9秒後
+        // ====================================
+
+        // ====================================
+        // 8.5秒後
+        // 「友達になれたね」の直前に揺らす
+        // ====================================
+
+        setTimeout(() => {
+
+            shakeScreen();
+
+        }, 8500);
+
+
+        // ====================================
+        // 9秒後
+        // 揺れを止めて「友達になれたね」
+        // ====================================
+
+        setTimeout(() => {
+
+            stopShakeScreen();
+
+            addRedMessage(
+                "友達になれたね"
+            );
+
+        }, 9000);
 
     }
 
@@ -795,3 +804,12 @@ input.addEventListener(
 
     }
 );
+
+setTimeout(() => {
+
+    addMessage(
+        "入場したら「入った」と送れ。",
+        "system"
+    );
+
+}, 2000);

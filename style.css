@@ -266,3 +266,24 @@ footer {
     }
 
 }
+
+/* 接続切断メッセージ専用 */
+.disconnect-message {
+    width: 100%;
+    max-width: 100% !important;
+
+    margin-top: 80px;
+    margin-bottom: 80px;
+
+    padding: 45px 14px;
+
+    background: #292929;
+
+    border-radius: 12px;
+
+    text-align: center;
+
+    line-height: 1.5;
+
+    box-sizing: border-box;
+}
