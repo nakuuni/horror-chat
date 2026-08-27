@@ -768,7 +768,7 @@ function sendMessage() {
             stopShakeScreen();
 
             addRedMessage(
-                "友達になれたね"
+                "トモダチになれたね"
             );
 
         }, 9000);
