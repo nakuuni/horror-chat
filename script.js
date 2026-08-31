@@ -225,7 +225,7 @@ function checkMarker(file) {
 
 
                 // 写真を800px以内に縮小
-                const maxSize = 800;
+                const maxSize = 600;
 
                 let width =
                     image.naturalWidth;
