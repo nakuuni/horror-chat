@@ -204,9 +204,7 @@ function checkMarker(file) {
 
         const image = new Image();
 
-        const url =
-            URL.createObjectURL(file);
-
+        const url = URL.createObjectURL(file);
 
         image.onload = function() {
 
@@ -216,11 +214,13 @@ function checkMarker(file) {
                     document.createElement("canvas");
 
                 const context =
-                    canvas.getContext("2d");
+                    canvas.getContext("2d", {
+                        willReadFrequently: true
+                    });
 
 
-                // 大きすぎる写真は縮小
-                const maxSize = 1400;
+                // 写真を800px以内に縮小
+                const maxSize = 800;
 
                 let width =
                     image.naturalWidth;
@@ -270,7 +270,6 @@ function checkMarker(file) {
                     );
 
 
-                // ArUco detector
                 const detector =
                     new AR.Detector({
                         dictionaryName: "ARUCO"
@@ -287,10 +286,6 @@ function checkMarker(file) {
                 );
 
 
-                URL.revokeObjectURL(url);
-
-
-                // 正しいIDがあるか
                 const isCorrect =
                     markers.some(
                         marker =>
@@ -299,7 +294,10 @@ function checkMarker(file) {
                     );
 
 
+                URL.revokeObjectURL(url);
+
                 resolve(isCorrect);
+
 
             } catch (error) {
 
