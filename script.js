@@ -42,6 +42,11 @@ function addMessage(text, type) {
     }
 }
 
+function vibrate(ms) {
+    if ("vibrate" in navigator) {
+        navigator.vibrate(ms);
+    }
+}
 
 // ========================================
 // 赤文字メッセージ
@@ -566,6 +571,7 @@ function showPhotoButton() {
 
                 }, 2800);
 
+                vibrate(1200);
 
                 // =================================
                 // 0.4秒
@@ -663,7 +669,7 @@ function showPhotoButton() {
 
                 }, 8000);
 
-
+                
                 // =================================
                 // タの1秒後
                 // お化け音
@@ -683,6 +689,8 @@ function showPhotoButton() {
                     );
 
                 }, 9000);
+
+                vibrate(1000);
 
 
                 // =================================
