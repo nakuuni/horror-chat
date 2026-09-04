@@ -5,48 +5,106 @@ const status = document.getElementById("status");
 
 
 // ========================================
-// 正解マーカー
+// 設定
 // ========================================
 
-// 書類に印刷するArUcoのID
+// 書類に印刷する正解マーカーID
 const CORRECT_MARKER_ID = 23;
 
 
 // ========================================
-// メッセージを追加
+// 効果音
+// ========================================
+
+const messageSound =
+    new Audio("sounds/message.mp3");
+
+const ghostSound =
+    new Audio("sounds/ghost.mp3");
+
+
+// 通知音
+messageSound.volume = 0.8;
+
+
+// お化け音
+ghostSound.volume = 1.0;
+
+
+// ========================================
+// 通知音
+// ========================================
+
+function playMessageSound() {
+
+    messageSound.currentTime = 0;
+
+    messageSound.play().catch(() => {});
+
+}
+
+
+// ========================================
+// お化け音
+// ========================================
+
+function playGhostSound() {
+
+    ghostSound.currentTime = 0;
+
+    ghostSound.play().catch(() => {});
+
+}
+
+
+// ========================================
+// スマホ振動
+// ========================================
+
+function vibrate(pattern) {
+
+    // Vibration API対応端末だけ
+    if (
+        "vibrate" in navigator
+    ) {
+
+        navigator.vibrate(pattern);
+
+    }
+
+}
+
+
+// ========================================
+// メッセージ追加
 // ========================================
 
 function addMessage(text, type) {
 
-    const message = document.createElement("div");
+    const message =
+        document.createElement("div");
 
     message.classList.add("message");
+
     message.classList.add(type);
 
     message.textContent = text;
 
     messages.appendChild(message);
 
-    messages.scrollTop = messages.scrollHeight;
+    messages.scrollTop =
+        messages.scrollHeight;
 
 
-    // システムメッセージなら通知音
+    // システムメッセージ
     if (type === "system") {
 
-        const audio =
-            new Audio("sounds/message.mp3");
+        playMessageSound();
 
-        audio.volume = 0.8;
-
-        audio.play().catch(() => {});
     }
+
 }
 
-function vibrate(ms) {
-    if ("vibrate" in navigator) {
-        navigator.vibrate(ms);
-    }
-}
 
 // ========================================
 // 赤文字メッセージ
@@ -54,59 +112,137 @@ function vibrate(ms) {
 
 function addRedMessage(text) {
 
-    const message = document.createElement("div");
+    const message =
+        document.createElement("div");
 
-    message.classList.add("message");
-    message.classList.add("system");
+    message.classList.add(
+        "message",
+        "system"
+    );
 
     message.textContent = text;
 
-    message.style.color = "red";
+    message.style.color = "#ff3333";
+
     message.style.fontWeight = "bold";
 
     messages.appendChild(message);
 
-    messages.scrollTop = messages.scrollHeight;
+    messages.scrollTop =
+        messages.scrollHeight;
 
+    playMessageSound();
 
-    const audio =
-        new Audio("sounds/message.mp3");
-
-    audio.volume = 0.8;
-
-    audio.play().catch(() => {});
 }
 
 
 // ========================================
-// 画像を追加
+// 画像追加
 // ========================================
 
 function addImage(src, type) {
 
-    const message = document.createElement("div");
+    const message =
+        document.createElement("div");
 
-    message.classList.add("message");
-    message.classList.add(type);
+    message.classList.add(
+        "message",
+        type
+    );
 
-    const image = document.createElement("img");
+
+    const image =
+        document.createElement("img");
 
     image.src = src;
 
     image.style.maxWidth = "100%";
+
     image.style.borderRadius = "8px";
+
     image.style.display = "block";
+
 
     message.appendChild(image);
 
     messages.appendChild(message);
 
-    messages.scrollTop = messages.scrollHeight;
+    messages.scrollTop =
+        messages.scrollHeight;
+
 }
 
 
 // ========================================
-// 画面を揺らす
+// URLメッセージ
+// ========================================
+
+function addLinkMessage(text, url) {
+
+    const message =
+        document.createElement("div");
+
+    message.classList.add(
+        "message",
+        "system"
+    );
+
+
+    const textElement =
+        document.createElement("div");
+
+    textElement.textContent = text;
+
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+
+    link.textContent = url;
+
+    link.target = "_blank";
+
+    link.rel =
+        "noopener noreferrer";
+
+
+    link.style.color =
+        "#4da6ff";
+
+    link.style.textDecoration =
+        "underline";
+
+    link.style.display =
+        "block";
+
+    link.style.marginTop =
+        "6px";
+
+
+    message.appendChild(
+        textElement
+    );
+
+    message.appendChild(
+        link
+    );
+
+    messages.appendChild(
+        message
+    );
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
+
+    playMessageSound();
+
+}
+
+
+// ========================================
+// 画面揺れ開始
 // ========================================
 
 function shakeScreen() {
@@ -118,12 +254,15 @@ function shakeScreen() {
         return;
     }
 
-    chat.classList.add("horror-shake");
+    chat.classList.add(
+        "horror-shake"
+    );
+
 }
 
 
 // ========================================
-// 画面の揺れを止める
+// 画面揺れ停止
 // ========================================
 
 function stopShakeScreen() {
@@ -135,7 +274,10 @@ function stopShakeScreen() {
         return;
     }
 
-    chat.classList.remove("horror-shake");
+    chat.classList.remove(
+        "horror-shake"
+    );
+
 }
 
 
@@ -148,26 +290,34 @@ function blackoutScreen() {
     const blackout =
         document.createElement("div");
 
-    blackout.classList.add("blackout");
+    blackout.classList.add(
+        "blackout"
+    );
 
-    document.body.appendChild(blackout);
+    document.body.appendChild(
+        blackout
+    );
+
 
     setTimeout(() => {
 
         blackout.remove();
 
     }, 300);
+
 }
 
 
 // ========================================
-// ミツケタ専用黒画面
+// ミツケタ画面
 // ========================================
 
 function showFoundMessage(letter) {
 
     let screen =
-        document.getElementById("foundScreen");
+        document.getElementById(
+            "foundScreen"
+        );
 
 
     if (!screen) {
@@ -175,11 +325,17 @@ function showFoundMessage(letter) {
         screen =
             document.createElement("div");
 
-        screen.id = "foundScreen";
+        screen.id =
+            "foundScreen";
 
-        screen.classList.add("found-screen");
+        screen.classList.add(
+            "found-screen"
+        );
 
-        document.body.appendChild(screen);
+        document.body.appendChild(
+            screen
+        );
+
     }
 
 
@@ -193,9 +349,34 @@ function showFoundMessage(letter) {
         "found-letter"
     );
 
-    letterElement.textContent = letter;
+    letterElement.textContent =
+        letter;
 
-    screen.appendChild(letterElement);
+
+    screen.appendChild(
+        letterElement
+    );
+
+}
+
+
+// ========================================
+// ミツケタ画面を消す
+// ========================================
+
+function hideFoundScreen() {
+
+    const screen =
+        document.getElementById(
+            "foundScreen"
+        );
+
+    if (screen) {
+
+        screen.remove();
+
+    }
+
 }
 
 
@@ -207,67 +388,79 @@ function checkMarker(file) {
 
     return new Promise((resolve) => {
 
-        const image = new Image();
+        const image =
+            new Image();
 
-        const url = URL.createObjectURL(file);
-
-        image.onload = function() {
-
-            try {
-
-                const canvas =
-                    document.createElement("canvas");
-
-                const context =
-                    canvas.getContext("2d", {
-                        willReadFrequently: true
-                    });
+        const url =
+            URL.createObjectURL(file);
 
 
-                // 写真を800px以内に縮小
-                const maxSize = 600;
+        image.onload =
+            function() {
 
-                let width =
-                    image.naturalWidth;
+                try {
 
-                let height =
-                    image.naturalHeight;
-
-
-                if (
-                    width > maxSize ||
-                    height > maxSize
-                ) {
-
-                    const ratio =
-                        Math.min(
-                            maxSize / width,
-                            maxSize / height
+                    const canvas =
+                        document.createElement(
+                            "canvas"
                         );
 
-                    width =
-                        Math.round(width * ratio);
 
-                    height =
-                        Math.round(height * ratio);
-                }
-
-
-                canvas.width = width;
-                canvas.height = height;
+                    const context =
+                        canvas.getContext(
+                            "2d",
+                            {
+                                willReadFrequently: true
+                            }
+                        );
 
 
-                context.drawImage(
-                    image,
-                    0,
-                    0,
-                    width,
-                    height
-                );
+                    // 写真を縮小
+                    const maxSize = 800;
 
 
-                const imageData =
-                    context.getImageData(
+                    let width =
+                        image.naturalWidth;
+
+                    let height =
+                        image.naturalHeight;
+
+
+                    if (
+                        width > maxSize ||
+                        height > maxSize
+                    ) {
+
+                        const ratio =
+                            Math.min(
+                                maxSize / width,
+                                maxSize / height
+                            );
+
+
+                        width =
+                            Math.round(
+                                width * ratio
+                            );
+
+
+                        height =
+                            Math.round(
+                                height * ratio
+                            );
+
+                    }
+
+
+                    canvas.width =
+                        width;
+
+                    canvas.height =
+                        height;
+
+
+                    context.drawImage(
+                        image,
                         0,
                         0,
                         width,
@@ -275,61 +468,87 @@ function checkMarker(file) {
                     );
 
 
-                const detector =
-                    new AR.Detector({
-                        dictionaryName: "ARUCO"
-                    });
+                    const imageData =
+                        context.getImageData(
+                            0,
+                            0,
+                            width,
+                            height
+                        );
 
 
-                const markers =
-                    detector.detect(imageData);
+                    const detector =
+                        new AR.Detector({
+                            dictionaryName:
+                                "ARUCO"
+                        });
 
 
-                console.log(
-                    "検出されたマーカー:",
-                    markers
-                );
+                    const markers =
+                        detector.detect(
+                            imageData
+                        );
 
 
-                const isCorrect =
-                    markers.some(
-                        marker =>
-                            marker.id ===
-                            CORRECT_MARKER_ID
+                    console.log(
+                        "検出されたマーカー:",
+                        markers
                     );
 
 
-                URL.revokeObjectURL(url);
+                    const found =
+                        markers.some(
+                            marker =>
+                                marker.id ===
+                                CORRECT_MARKER_ID
+                        );
 
-                resolve(isCorrect);
+
+                    URL.revokeObjectURL(
+                        url
+                    );
 
 
-            } catch (error) {
+                    resolve(found);
 
-                console.error(
-                    "マーカー検出エラー:",
-                    error
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "マーカー検出エラー:",
+                        error
+                    );
+
+
+                    URL.revokeObjectURL(
+                        url
+                    );
+
+
+                    resolve(false);
+
+                }
+
+            };
+
+
+        image.onerror =
+            function() {
+
+                URL.revokeObjectURL(
+                    url
                 );
 
-                URL.revokeObjectURL(url);
-
                 resolve(false);
-            }
-        };
 
-
-        image.onerror = function() {
-
-            URL.revokeObjectURL(url);
-
-            resolve(false);
-
-        };
+            };
 
 
         image.src = url;
 
     });
+
 }
 
 
@@ -344,43 +563,72 @@ function showPhotoButton() {
             "photoButton"
         )
     ) {
+
         return;
+
     }
 
 
     const button =
-        document.createElement("button");
+        document.createElement(
+            "button"
+        );
 
-    button.id = "photoButton";
+
+    button.id =
+        "photoButton";
+
 
     button.textContent =
         "📷 写真を送る";
 
 
-    button.style.display = "block";
-    button.style.margin = "10px auto";
-    button.style.padding = "12px 20px";
-    button.style.border = "none";
-    button.style.borderRadius = "10px";
-    button.style.background = "#444";
-    button.style.color = "white";
-    button.style.fontSize = "16px";
+    button.style.display =
+        "block";
+
+    button.style.margin =
+        "10px auto";
+
+    button.style.padding =
+        "12px 20px";
+
+    button.style.border =
+        "none";
+
+    button.style.borderRadius =
+        "10px";
+
+    button.style.background =
+        "#444";
+
+    button.style.color =
+        "white";
+
+    button.style.fontSize =
+        "16px";
 
 
     const fileInput =
-        document.createElement("input");
+        document.createElement(
+            "input"
+        );
 
-    fileInput.type = "file";
 
-    fileInput.accept = "image/*";
+    fileInput.type =
+        "file";
 
-    fileInput.capture = "environment";
+    fileInput.accept =
+        "image/*";
 
-    fileInput.style.display = "none";
+    fileInput.capture =
+        "environment";
+
+    fileInput.style.display =
+        "none";
 
 
     // ====================================
-    // ボタンを押す
+    // 写真ボタン
     // ====================================
 
     button.addEventListener(
@@ -394,7 +642,7 @@ function showPhotoButton() {
 
 
     // ====================================
-    // 写真を選択
+    // 写真選択
     // ====================================
 
     fileInput.addEventListener(
@@ -404,17 +652,21 @@ function showPhotoButton() {
             const file =
                 fileInput.files[0];
 
+
             if (!file) {
                 return;
             }
 
 
             // =================================
-            // 客が撮った写真を表示
+            // 写真を表示
             // =================================
 
             const imageURL =
-                URL.createObjectURL(file);
+                URL.createObjectURL(
+                    file
+                );
+
 
             addImage(
                 imageURL,
@@ -422,31 +674,44 @@ function showPhotoButton() {
             );
 
 
-            // ボタンを一旦消す
             button.remove();
 
             fileInput.remove();
 
 
             // =================================
-            // マーカー判定中
+            // 確認中
             // =================================
 
             addMessage(
-                "画像を確認している……",
+                "写真を確認している……",
                 "system"
             );
 
-            await new Promise(resolve => {
-                setTimeout(resolve, 3000);
-            });
 
-            const isCorrect =
-                await checkMarker(file);
+            // 人間が確認している感じ
+            await new Promise(
+                resolve => {
+                    setTimeout(
+                        resolve,
+                        3000
+                    );
+                }
+            );
 
 
             // =================================
-            // 間違い
+            // マーカー判定
+            // =================================
+
+            const isCorrect =
+                await checkMarker(
+                    file
+                );
+
+
+            // =================================
+            // 不正解
             // =================================
 
             if (!isCorrect) {
@@ -457,7 +722,6 @@ function showPhotoButton() {
                 );
 
 
-                // もう一度送れるようにする
                 setTimeout(() => {
 
                     addMessage(
@@ -465,9 +729,10 @@ function showPhotoButton() {
                         "system"
                     );
 
+
                     showPhotoButton();
 
-                }, 1000);
+                }, 1500);
 
 
                 return;
@@ -487,7 +752,7 @@ function showPhotoButton() {
 
             // =================================
             // 5秒後
-            // 文字化け開始
+            // ホラー開始
             // =================================
 
             setTimeout(() => {
@@ -498,8 +763,20 @@ function showPhotoButton() {
                     "● OFFLINE";
 
 
-                // 揺れ開始
+                // 画面揺れ
                 shakeScreen();
+
+
+                // スマホ振動開始
+                vibrate([
+                    150,
+                    80,
+                    120,
+                    80,
+                    180,
+                    120,
+                    80
+                ]);
 
 
                 // 一瞬暗転
@@ -507,7 +784,7 @@ function showPhotoButton() {
 
 
                 // =================================
-                // 文字化け①
+                // 文字化け
                 // =================================
 
                 addMessage(
@@ -515,10 +792,6 @@ function showPhotoButton() {
                     "system"
                 );
 
-
-                // =================================
-                // 1秒後
-                // =================================
 
                 setTimeout(() => {
 
@@ -530,10 +803,6 @@ function showPhotoButton() {
                 }, 1000);
 
 
-                // =================================
-                // 0.8秒後
-                // =================================
-
                 setTimeout(() => {
 
                     addMessage(
@@ -543,10 +812,6 @@ function showPhotoButton() {
 
                 }, 1800);
 
-
-                // =================================
-                // 0.6秒後
-                // =================================
 
                 setTimeout(() => {
 
@@ -558,10 +823,6 @@ function showPhotoButton() {
                 }, 2400);
 
 
-                // =================================
-                // 0.4秒後
-                // =================================
-
                 setTimeout(() => {
 
                     addMessage(
@@ -571,12 +832,8 @@ function showPhotoButton() {
 
                 }, 2800);
 
-                vibrate(1200);
 
-                // =================================
                 // 0.4秒
-                // =================================
-
                 setTimeout(() => {
 
                     addMessage(
@@ -587,10 +844,7 @@ function showPhotoButton() {
                 }, 3200);
 
 
-                // =================================
                 // 0.4秒
-                // =================================
-
                 setTimeout(() => {
 
                     addMessage(
@@ -601,10 +855,7 @@ function showPhotoButton() {
                 }, 3600);
 
 
-                // =================================
                 // 0.4秒
-                // =================================
-
                 setTimeout(() => {
 
                     addMessage(
@@ -664,12 +915,21 @@ function showPhotoButton() {
                         "タ"
                     );
 
-                    // タで揺れ停止
+
+                    // タの瞬間に画面揺れ停止
                     stopShakeScreen();
+
+
+                    // タの瞬間に短い振動
+                    vibrate([
+                        250,
+                        100,
+                        350
+                    ]);
 
                 }, 8000);
 
-                
+
                 // =================================
                 // タの1秒後
                 // お化け音
@@ -677,47 +937,22 @@ function showPhotoButton() {
 
                 setTimeout(() => {
 
-                    const ghostAudio =
-                        new Audio(
-                            "sounds/ghost.mp3"
-                        );
-
-                    ghostAudio.volume = 1.0;
-
-                    ghostAudio.play().catch(
-                        () => {}
-                    );
+                    playGhostSound();
 
                 }, 9000);
 
-                vibrate(1000);
-
 
                 // =================================
-                // タから10秒
-                // チャットへ復帰
+                // タから10秒後
+                // チャット復帰
                 // =================================
 
                 setTimeout(() => {
 
 
-                    // 黒画面削除
-                    const screen =
-                        document.getElementById(
-                            "foundScreen"
-                        );
+                    hideFoundScreen();
 
-                    if (screen) {
-                        screen.remove();
-                    }
-                    
-                    const spacer = document.createElement("div");
 
-                    spacer.style.height = "1.5em";
-
-                    messages.appendChild(spacer);
-
-                    // ONLINE
                     status.textContent =
                         "● ONLINE";
 
@@ -731,13 +966,13 @@ function showPhotoButton() {
 
 
                 // =================================
-                // 再接続後
+                // その後
                 // =================================
 
                 setTimeout(() => {
 
                     addMessage(
-                        "協力に感謝する。",
+                        "写真の送信ありがとう。協力に感謝する。",
                         "system"
                     );
 
@@ -754,14 +989,14 @@ function showPhotoButton() {
                 }, 22000);
 
 
+                // 生きて帰れたら
                 setTimeout(() => {
 
-
-                    // 「生きて帰れたら」だけ
-                    // 赤＋太字
-
                     const message =
-                        document.createElement("div");
+                        document.createElement(
+                            "div"
+                        );
+
 
                     message.classList.add(
                         "message",
@@ -780,20 +1015,12 @@ function showPhotoButton() {
                         message
                     );
 
+
                     messages.scrollTop =
                         messages.scrollHeight;
 
 
-                    const audio =
-                        new Audio(
-                            "sounds/message.mp3"
-                        );
-
-                    audio.volume = 0.8;
-
-                    audio.play().catch(
-                        () => {}
-                    );
+                    playMessageSound();
 
                 }, 24000);
 
@@ -804,11 +1031,11 @@ function showPhotoButton() {
 
                 setTimeout(() => {
 
-
                     const message =
                         document.createElement(
                             "div"
                         );
+
 
                     message.classList.add(
                         "message",
@@ -821,6 +1048,17 @@ function showPhotoButton() {
                         "――匿名さんの接続が切れました――";
 
 
+                    message.style.marginTop =
+                        "80px";
+
+                    message.style.marginBottom =
+                        "80px";
+
+
+                    message.style.textAlign =
+                        "center";
+
+
                     messages.appendChild(
                         message
                     );
@@ -830,16 +1068,7 @@ function showPhotoButton() {
                         messages.scrollHeight;
 
 
-                    const audio =
-                        new Audio(
-                            "sounds/message.mp3"
-                        );
-
-                    audio.volume = 0.8;
-
-                    audio.play().catch(
-                        () => {}
-                    );
+                    playMessageSound();
 
                 }, 26000);
 
@@ -849,29 +1078,36 @@ function showPhotoButton() {
     );
 
 
-    messages.appendChild(button);
+    messages.appendChild(
+        button
+    );
+
 
     messages.scrollTop =
         messages.scrollHeight;
+
 }
 
 
 // ========================================
-// 「入った」の処理
+// 入室処理
 // ========================================
 
 function enteredRoom() {
 
+
+    // 1秒後
     setTimeout(() => {
 
         addMessage(
-            "館の間取り図だ。",
+            "これが館の間取り図だ。",
             "system"
         );
 
     }, 1000);
 
 
+    // 3秒後
     setTimeout(() => {
 
         addImage(
@@ -882,16 +1118,19 @@ function enteredRoom() {
     }, 3000);
 
 
+    // 5秒後
     setTimeout(() => {
 
         addMessage(
-            "どこかにある日記の写真を送れ。",
+            "館のどこかにある日記の写真を送れ。",
             "system"
         );
+
 
         showPhotoButton();
 
     }, 5000);
+
 }
 
 
@@ -910,16 +1149,18 @@ function sendMessage() {
     }
 
 
+    // 客のメッセージ
     addMessage(
         text,
         "user"
     );
 
+
     input.value = "";
 
 
     // ====================================
-    // 「入」「はい」を含む場合
+    // 入室前確認
     // ====================================
 
     const normalizedText =
@@ -928,22 +1169,102 @@ function sendMessage() {
             .toLowerCase();
 
 
+    // ====================================
+    // 「はい」
+    // ====================================
+
     if (
-        normalizedText.includes("入") ||
         normalizedText.includes("はい")
     ) {
 
-        enteredRoom();
+
+        // 最初の質問
+        if (
+            !window.noticeCheckStarted
+        ) {
+
+            window.noticeCheckStarted =
+                true;
+
+
+            setTimeout(() => {
+
+                addMessage(
+                    "通知音はなりましたか？",
+                    "system"
+                );
+
+            }, 1000);
+
+
+            return;
+        }
+
+
+        // 通知確認後
+        if (
+            !window.noticeCheckFinished
+        ) {
+
+            window.noticeCheckFinished =
+                true;
+
+
+            setTimeout(() => {
+
+                addMessage(
+                    "館に入ったら「入った」と送れ。",
+                    "system"
+                );
+
+            }, 1000);
+
+
+            return;
+        }
 
     }
 
 
     // ====================================
-    // 「脱出成功」
+    // 「入」「はい」を含む
     // ====================================
 
-    if (text.includes("脱出") || text.includes("だっしゅつ")) {
+    // 確認が終わってから入室判定
+    if (
+        window.noticeCheckFinished &&
+        (
+            normalizedText.includes("入") ||
+            normalizedText.includes("はい")
+        )
+    ) {
 
+        if (
+            !window.enteredStarted
+        ) {
+
+            window.enteredStarted =
+                true;
+
+            enteredRoom();
+
+        }
+
+    }
+
+
+    // ====================================
+    // 脱出成功
+    // ====================================
+
+    if (
+        text.includes("脱出") || text.includes("だっしゅつ")
+    ) {
+
+
+        // =================================
+        // 1秒
+        // =================================
 
         setTimeout(() => {
 
@@ -953,6 +1274,21 @@ function sendMessage() {
             );
 
         }, 1000);
+
+
+        // =================================
+        // 3秒
+        // 全体図
+        // =================================
+
+        // =================================
+        // 5秒
+        // =================================
+
+
+        // =================================
+        // 7秒
+        // =================================
 
         setTimeout(() => {
 
@@ -964,70 +1300,24 @@ function sendMessage() {
         }, 3000);
 
 
+        // =================================
+        // 8秒
         // 投票URL
+        // =================================
+
         setTimeout(() => {
 
-            const message =
-                document.createElement("div");
-
-            message.classList.add(
-                "message",
-                "system"
+            addLinkMessage(
+                "クラ発の投票はこちら",
+                "https://example.com"
             );
 
-
-            const link =
-                document.createElement("a");
-
-
-            link.href =
-                "https://example.com";
-
-            link.textContent =
-                "クラ発の投票はこちら";
-
-            link.target =
-                "_blank";
-
-            link.rel =
-                "noopener noreferrer";
-
-
-            link.style.color =
-                "#4da6ff";
-
-            link.style.textDecoration =
-                "underline";
-
-
-            message.appendChild(
-                link
-            );
-
-            messages.appendChild(
-                message
-            );
-
-            messages.scrollTop =
-                messages.scrollHeight;
-
-
-            const audio =
-                new Audio(
-                    "sounds/message.mp3"
-                );
-
-            audio.volume = 0.8;
-
-            audio.play().catch(
-                () => {}
-            );
-
-        }, 5000);
+        }, 8000);
 
 
         // =================================
-        // 友達になれたね直前に揺らす
+        // 8.5秒
+        // 少し揺らす
         // =================================
 
         setTimeout(() => {
@@ -1038,7 +1328,7 @@ function sendMessage() {
 
 
         // =================================
-        // 友達になれたね
+        // 9秒
         // =================================
 
         setTimeout(() => {
@@ -1046,7 +1336,7 @@ function sendMessage() {
             stopShakeScreen();
 
             addRedMessage(
-                "またあそぼうね"
+                "友達になれたね"
             );
 
         }, 9000);
@@ -1074,7 +1364,9 @@ input.addEventListener(
     "keydown",
     function(event) {
 
-        if (event.key === "Enter") {
+        if (
+            event.key === "Enter"
+        ) {
 
             sendMessage();
 
@@ -1085,14 +1377,14 @@ input.addEventListener(
 
 
 // ========================================
-// 初期メッセージ
+// 最初のメッセージ
 // ========================================
 
 setTimeout(() => {
 
     addMessage(
-        "入場したら「入った」と送れ。",
+        "このメッセージは見えていますか？",
         "system"
     );
 
-}, 2000);
+}, 500);
