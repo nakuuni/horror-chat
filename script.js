@@ -8,8 +8,6 @@ const status = document.getElementById("status");
 // 設定
 // ========================================
 
-// 書類に印刷する正解マーカーID
-const CORRECT_MARKER_ID = 23;
 
 
 // ========================================
@@ -384,173 +382,6 @@ function hideFoundScreen() {
 // ArUcoマーカー判定
 // ========================================
 
-function checkMarker(file) {
-
-    return new Promise((resolve) => {
-
-        const image =
-            new Image();
-
-        const url =
-            URL.createObjectURL(file);
-
-
-        image.onload =
-            function() {
-
-                try {
-
-                    const canvas =
-                        document.createElement(
-                            "canvas"
-                        );
-
-
-                    const context =
-                        canvas.getContext(
-                            "2d",
-                            {
-                                willReadFrequently: true
-                            }
-                        );
-
-
-                    // 写真を縮小
-                    const maxSize = 800;
-
-
-                    let width =
-                        image.naturalWidth;
-
-                    let height =
-                        image.naturalHeight;
-
-
-                    if (
-                        width > maxSize ||
-                        height > maxSize
-                    ) {
-
-                        const ratio =
-                            Math.min(
-                                maxSize / width,
-                                maxSize / height
-                            );
-
-
-                        width =
-                            Math.round(
-                                width * ratio
-                            );
-
-
-                        height =
-                            Math.round(
-                                height * ratio
-                            );
-
-                    }
-
-
-                    canvas.width =
-                        width;
-
-                    canvas.height =
-                        height;
-
-
-                    context.drawImage(
-                        image,
-                        0,
-                        0,
-                        width,
-                        height
-                    );
-
-
-                    const imageData =
-                        context.getImageData(
-                            0,
-                            0,
-                            width,
-                            height
-                        );
-
-
-                    const detector =
-                        new AR.Detector({
-                            dictionaryName:
-                                "ARUCO"
-                        });
-
-
-                    const markers =
-                        detector.detect(
-                            imageData
-                        );
-
-
-                    console.log(
-                        "検出されたマーカー:",
-                        markers
-                    );
-
-
-                    const found =
-                        markers.some(
-                            marker =>
-                                marker.id ===
-                                CORRECT_MARKER_ID
-                        );
-
-
-                    URL.revokeObjectURL(
-                        url
-                    );
-
-
-                    resolve(found);
-
-                }
-
-                catch (error) {
-
-                    console.error(
-                        "マーカー検出エラー:",
-                        error
-                    );
-
-
-                    URL.revokeObjectURL(
-                        url
-                    );
-
-
-                    resolve(false);
-
-                }
-
-            };
-
-
-        image.onerror =
-            function() {
-
-                URL.revokeObjectURL(
-                    url
-                );
-
-                resolve(false);
-
-            };
-
-
-        image.src = url;
-
-    });
-
-}
-
 
 // ========================================
 // 写真送信ボタン
@@ -689,7 +520,7 @@ function showPhotoButton() {
             );
 
 
-            // 人間が確認している感じ
+            // 3秒待つ
             await new Promise(
                 resolve => {
                     setTimeout(
@@ -698,46 +529,6 @@ function showPhotoButton() {
                     );
                 }
             );
-
-
-            // =================================
-            // マーカー判定
-            // =================================
-
-            const isCorrect =
-                await checkMarker(
-                    file
-                );
-
-
-            // =================================
-            // 不正解
-            // =================================
-
-            if (!isCorrect) {
-
-                addMessage(
-                    "……違う。",
-                    "system"
-                );
-
-
-                setTimeout(() => {
-
-                    addMessage(
-                        "もう一度探せ。",
-                        "system"
-                    );
-
-
-                    showPhotoButton();
-
-                }, 1500);
-
-
-                return;
-            }
-
 
             // =================================
             // 正解
@@ -1080,7 +871,7 @@ function showPhotoButton() {
 
                 }, 26000);
 
-            }, 5000);
+            }, 3000);
 
         }
     );
@@ -1130,7 +921,7 @@ function enteredRoom() {
     setTimeout(() => {
 
         addMessage(
-            "書斎の机の上にある日記全体の写真を送れ。",
+            "鍵を取って書斎の部屋を開け、机の上にある日記全体の写真を送れ。",
             "system"
         );
 
