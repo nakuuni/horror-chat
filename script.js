@@ -928,8 +928,8 @@ function escapeSuccess() {
     setTimeout(() => {
 
         addLinkMessage(
-            "クラ発の投票はこちら",
-            "https://example.com"
+            "クラ発の投票はこちら！",
+            "https://docs.google.com/forms/d/e/1FAIpQLSd6dXxDbQZlxAH9cwxAm-HuslQNaiypT29E4fGXLgFLbsCHNw/viewform"
         );
 
     }, 5000);
