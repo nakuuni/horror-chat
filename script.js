@@ -5,9 +5,19 @@ const status = document.getElementById("status");
 
 
 // ========================================
-// 設定
+// 状態管理
 // ========================================
 
+// 初期状態
+// 0 = 最初の質問
+// 1 = 「館に入ったら...」待ち
+// 2 = 入室後
+// 3 = 暗号①
+// 4 = 暗号②
+// 5 = 暗号③
+// 6 = ④の場所まで到達、脱出待ち
+// 7 = 脱出成功後
+let gameStep = 0;
 
 
 // ========================================
@@ -20,12 +30,7 @@ const messageSound =
 const ghostSound =
     new Audio("sounds/ghost.mp3");
 
-
-// 通知音
 messageSound.volume = 0.8;
-
-
-// お化け音
 ghostSound.volume = 1.0;
 
 
@@ -61,10 +66,7 @@ function playGhostSound() {
 
 function vibrate(pattern) {
 
-    // Vibration API対応端末だけ
-    if (
-        "vibrate" in navigator
-    ) {
+    if ("vibrate" in navigator) {
 
         navigator.vibrate(pattern);
 
@@ -82,9 +84,10 @@ function addMessage(text, type) {
     const message =
         document.createElement("div");
 
-    message.classList.add("message");
-
-    message.classList.add(type);
+    message.classList.add(
+        "message",
+        type
+    );
 
     message.textContent = text;
 
@@ -94,7 +97,6 @@ function addMessage(text, type) {
         messages.scrollHeight;
 
 
-    // システムメッセージ
     if (type === "system") {
 
         playMessageSound();
@@ -121,7 +123,6 @@ function addRedMessage(text) {
     message.textContent = text;
 
     message.style.color = "#ff3333";
-
     message.style.fontWeight = "bold";
 
     messages.appendChild(message);
@@ -155,9 +156,7 @@ function addImage(src, type) {
     image.src = src;
 
     image.style.maxWidth = "100%";
-
     image.style.borderRadius = "8px";
-
     image.style.display = "block";
 
 
@@ -205,8 +204,7 @@ function addLinkMessage(text, url) {
         "noopener noreferrer";
 
 
-    link.style.color =
-        "#4da6ff";
+    link.style.color = "#4da6ff";
 
     link.style.textDecoration =
         "underline";
@@ -240,7 +238,7 @@ function addLinkMessage(text, url) {
 
 
 // ========================================
-// 画面揺れ開始
+// 画面揺れ
 // ========================================
 
 function shakeScreen() {
@@ -258,10 +256,6 @@ function shakeScreen() {
 
 }
 
-
-// ========================================
-// 画面揺れ停止
-// ========================================
 
 function stopShakeScreen() {
 
@@ -321,7 +315,9 @@ function showFoundMessage(letter) {
     if (!screen) {
 
         screen =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         screen.id =
             "foundScreen";
@@ -341,7 +337,9 @@ function showFoundMessage(letter) {
 
 
     const letterElement =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     letterElement.classList.add(
         "found-letter"
@@ -376,11 +374,6 @@ function hideFoundScreen() {
     }
 
 }
-
-
-// ========================================
-// ArUcoマーカー判定
-// ========================================
 
 
 // ========================================
@@ -523,15 +516,18 @@ function showPhotoButton() {
             // 3秒待つ
             await new Promise(
                 resolve => {
+
                     setTimeout(
                         resolve,
                         3000
                     );
+
                 }
             );
 
+
             // =================================
-            // 正解
+            // 写真は何でもOK
             // =================================
 
             addMessage(
@@ -558,7 +554,7 @@ function showPhotoButton() {
                 shakeScreen();
 
 
-                // スマホ振動開始
+                // スマホ振動
                 vibrate([
                     150,
                     80,
@@ -575,7 +571,7 @@ function showPhotoButton() {
 
 
                 // =================================
-                // 文字化け
+                // 文字化け開始
                 // =================================
 
                 addMessage(
@@ -584,6 +580,7 @@ function showPhotoButton() {
                 );
 
 
+                // 1秒
                 setTimeout(() => {
 
                     addMessage(
@@ -594,6 +591,7 @@ function showPhotoButton() {
                 }, 1000);
 
 
+                // 0.8秒
                 setTimeout(() => {
 
                     addMessage(
@@ -604,6 +602,7 @@ function showPhotoButton() {
                 }, 1800);
 
 
+                // 0.6秒
                 setTimeout(() => {
 
                     addMessage(
@@ -614,6 +613,7 @@ function showPhotoButton() {
                 }, 2400);
 
 
+                // 0.4秒
                 setTimeout(() => {
 
                     addMessage(
@@ -663,9 +663,7 @@ function showPhotoButton() {
 
                 setTimeout(() => {
 
-                    showFoundMessage(
-                        "ミ"
-                    );
+                    showFoundMessage("ミ");
 
                 }, 5000);
 
@@ -676,9 +674,7 @@ function showPhotoButton() {
 
                 setTimeout(() => {
 
-                    showFoundMessage(
-                        "ツ"
-                    );
+                    showFoundMessage("ツ");
 
                 }, 6000);
 
@@ -689,9 +685,7 @@ function showPhotoButton() {
 
                 setTimeout(() => {
 
-                    showFoundMessage(
-                        "ケ"
-                    );
+                    showFoundMessage("ケ");
 
                 }, 7000);
 
@@ -702,16 +696,14 @@ function showPhotoButton() {
 
                 setTimeout(() => {
 
-                    showFoundMessage(
-                        "タ"
-                    );
+                    showFoundMessage("タ");
 
 
-                    // タの瞬間に画面揺れ停止
+                    // 揺れ停止
                     stopShakeScreen();
 
 
-                    // タの瞬間に短い振動
+                    // 「タ」で強めの振動
                     vibrate([
                         250,
                         100,
@@ -735,7 +727,7 @@ function showPhotoButton() {
 
                 // =================================
                 // タから10秒後
-                // チャット復帰
+                // チャットに戻る
                 // =================================
 
                 setTimeout(() => {
@@ -743,6 +735,11 @@ function showPhotoButton() {
 
                     hideFoundScreen();
 
+                    const spacer = document.createElement("div");
+
+                    spacer.style.height = "1.5em";
+
+                    messages.appendChild(spacer);
 
                     status.textContent =
                         "● ONLINE";
@@ -753,125 +750,45 @@ function showPhotoButton() {
                         "system"
                     );
 
+
+                    // 暗号①へ
+                    gameStep = 3;
+
+
+                    setTimeout(() => {
+
+                        addMessage(
+                            "この館から出るには4桁のコードが必要だ。",
+                            "system"
+                        );
+
+                    }, 2000);
+
+
+                    setTimeout(() => {
+
+                        addMessage(
+                            "まず暖炉の付近にある①の数字を探し、"
+                            + "見つけた数字を送ってくれ。",
+                            "system"
+                        );
+
+                    }, 4000);
+
+
+                    setTimeout(() => {
+
+                        addImage(
+                            "images/room2_map.png",
+                            "system"
+                        );
+
+                    }, 6000);
+
+
                 }, 18000);
-
-
-                // =================================
-                // その後
-                // =================================
-
-                setTimeout(() => {
-
-                    addMessage(
-                        "協力に感謝する。",
-                        "system"
-                    );
-
-                }, 20000);
-
-
-                setTimeout(() => {
-
-                    addMessage(
-                        "ただ家主に見つかってしまったようだな。館内にある4桁の数字を探して脱出するんだ。さっき送った間取り図を参考にしろ。",
-                        "system"
-                    );
-
-                }, 22000);
-
-                setTimeout(() => {
-
-                    addImage(
-                        "images/room_map.png",
-                        "system"
-                    );
-
-                }, 23000);
-
-                // 生きて帰れたら
-                setTimeout(() => {
-
-                    const message =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    message.classList.add(
-                        "message",
-                        "system"
-                    );
-
-
-                    message.innerHTML =
-                        "<strong style='color:#ff3333;'>"
-                        + "5分以内に生きて帰れたら"
-                        + "</strong>"
-                        + "報酬を渡そう。";
-
-
-                    messages.appendChild(
-                        message
-                    );
-
-
-                    messages.scrollTop =
-                        messages.scrollHeight;
-
-
-                    playMessageSound();
-
-                }, 24000);
-
-
-                // =================================
-                // 接続切断
-                // =================================
-
-                setTimeout(() => {
-
-                    const message =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    message.classList.add(
-                        "message",
-                        "system",
-                        "disconnect-message"
-                    );
-
-
-                    message.textContent =
-                        "――匿名さんの接続が切れました――";
-
-
-                    message.style.marginTop =
-                        "80px";
-
-                    message.style.marginBottom =
-                        "80px";
-
-
-                    message.style.textAlign =
-                        "center";
-
-
-                    messages.appendChild(
-                        message
-                    );
-
-
-                    messages.scrollTop =
-                        messages.scrollHeight;
-
-
-                    playMessageSound();
-
-                }, 26000);
-
-            }, 3000);
+            
+             }, 3000);
 
         }
     );
@@ -881,10 +798,8 @@ function showPhotoButton() {
         button
     );
 
-
     messages.scrollTop =
         messages.scrollHeight;
-
 }
 
 
@@ -893,6 +808,8 @@ function showPhotoButton() {
 // ========================================
 
 function enteredRoom() {
+
+    gameStep = 2;
 
 
     // 1秒後
@@ -910,7 +827,7 @@ function enteredRoom() {
     setTimeout(() => {
 
         addImage(
-            "images/full_map.png",
+            "images/room1_map.png",
             "system"
         );
 
@@ -921,15 +838,121 @@ function enteredRoom() {
     setTimeout(() => {
 
         addMessage(
-            "鍵を取って書斎の部屋を開け、机の上にある日記全体の写真を送れ。",
+            "書斎の鍵を取り、書斎内にある日記の写真を送れ。",
             "system"
         );
-
 
         showPhotoButton();
 
     }, 5000);
+}
 
+
+// ========================================
+// 暗号④へ進む
+// ========================================
+
+function goToFourthRoom() {
+
+    gameStep = 6;
+
+
+    addMessage(
+        "よし。近くに出口があるな。",
+        "system"
+    );
+
+
+    setTimeout(() => {
+
+        addMessage(
+            "脱出の番号は① → ② → ③ → ④だ。",
+            "system"
+        );
+
+    }, 2000);
+
+
+    setTimeout(() => {
+
+        addMessage(
+            "最後の④を探しに行き、出口から脱出しろ。",
+            "system"
+        );
+
+    }, 4000);
+
+
+    setTimeout(() => {
+
+        addImage(
+            "images/room4_map.png",
+            "system"
+        );
+
+    }, 6000);
+}
+
+
+// ========================================
+// 脱出成功
+// ========================================
+
+function escapeSuccess() {
+
+    gameStep = 7;
+
+
+    // 1秒後
+    setTimeout(() => {
+
+        addMessage(
+            "脱出おめでとう！",
+            "system"
+        );
+
+    }, 1000);
+
+    // 7秒後
+    setTimeout(() => {
+
+        addMessage(
+            "クラ発投票お願いします！",
+            "system"
+        );
+
+    }, 3000);
+
+
+    // 8秒後
+    setTimeout(() => {
+
+        addLinkMessage(
+            "クラ発の投票はこちら",
+            "https://example.com"
+        );
+
+    }, 5000);
+
+
+    // 8.5秒後
+    setTimeout(() => {
+
+        shakeScreen();
+
+    }, 7500);
+
+
+    // 9秒後
+    setTimeout(() => {
+
+        stopShakeScreen();
+
+        addRedMessage(
+            "友達になれたね"
+        );
+
+    }, 9000);
 }
 
 
@@ -958,10 +981,6 @@ function sendMessage() {
     input.value = "";
 
 
-    // ====================================
-    // 入室前確認
-    // ====================================
-
     const normalizedText =
         text
             .replace(/\s/g, "")
@@ -969,196 +988,166 @@ function sendMessage() {
 
 
     // ====================================
-    // 「はい」
+    // 最初の質問
     // ====================================
 
-    if (
-        normalizedText.includes("はい")
-    ) {
+    if (gameStep === 0) {
 
+        gameStep = 1;
 
-        // 最初の質問
-        if (
-            !window.noticeCheckStarted
-        ) {
-
-            window.noticeCheckStarted =
-                true;
-
-
-            setTimeout(() => {
-
-                addMessage(
-                    "通知音はなりましたか？",
-                    "system"
-                );
-
-            }, 1000);
-
-
-            return;
-        }
-
-
-        // 通知確認後
-        if (
-            !window.noticeCheckFinished
-        ) {
-
-            window.noticeCheckFinished =
-                true;
-
-
-            setTimeout(() => {
-
-                addMessage(
-                    "館に入ったら「入った」と送れ。",
-                    "system"
-                );
-
-            }, 1000);
-
-
-            return;
-        }
-
-    }
-
-
-    // ====================================
-    // 「入」「はい」を含む
-    // ====================================
-
-    // 確認が終わってから入室判定
-    if (
-        window.noticeCheckFinished &&
-        (
-            normalizedText.includes("入") ||
-            normalizedText.includes("はい")
-        )
-    ) {
-
-        if (
-            !window.enteredStarted
-        ) {
-
-            window.enteredStarted =
-                true;
-
-            enteredRoom();
-
-        }
-
-    }
-
-
-    // ====================================
-    // 脱出成功
-    // ====================================
-
-    if (
-        text === "脱出成功"
-    ) {
-
-
-        // =================================
-        // 1秒
-        // =================================
 
         setTimeout(() => {
 
             addMessage(
-                "脱出おめでとう！",
+                "館に入ったら「入った」と送れ。",
                 "system"
             );
 
         }, 1000);
 
 
-        // =================================
-        // 3秒
-        // 全体図
-        // =================================
-
-        setTimeout(() => {
-
-            addImage(
-                "images/full_map.png",
-                "system"
-            );
-
-        }, 3000);
+        return;
+    }
 
 
-        // =================================
-        // 5秒
-        // =================================
+    // ====================================
+    // 入室
+    // 「入」が含まれていればOK
+    // ====================================
 
-        setTimeout(() => {
+    if (gameStep === 1) {
 
-            addMessage(
-                "無事に脱出したようだな。",
-                "system"
-            );
+        if (
+            normalizedText.includes("入")
+        ) {
 
-        }, 5000);
+            if (!window.enteredStarted) {
 
+                window.enteredStarted =
+                    true;
 
-        // =================================
-        // 7秒
-        // =================================
+                enteredRoom();
 
-        setTimeout(() => {
+            }
 
-            addMessage(
-                "クラ発投票お願いします！",
-                "system"
-            );
+        }
 
-        }, 7000);
+        return;
+    }
 
 
-        // =================================
-        // 8秒
-        // 投票URL
-        // =================================
+    // ====================================
+    // ①
+    // 正解：1 / いち / 一
+    // ====================================
 
-        setTimeout(() => {
+    if (gameStep === 3) {
 
-            addLinkMessage(
-                "クラブ発表の投票はこちら",
-                "https://example.com"
-            );
+        if (
+            normalizedText.includes("1") ||
+            normalizedText.includes("いち") ||
+            normalizedText.includes("一") ||
+            normalizedText.includes("１")
+        ) {
 
-        }, 8000);
-
-
-        // =================================
-        // 8.5秒
-        // 少し揺らす
-        // =================================
-
-        setTimeout(() => {
-
-            shakeScreen();
-
-        }, 8500);
+            gameStep = 4;
 
 
-        // =================================
-        // 9秒
-        // =================================
+            setTimeout(() => {
 
-        setTimeout(() => {
+                addMessage(
+                    "よし。次に廊下下付近にある②の数字を送ってくれ。",
+                    "system"
+                );
 
-            stopShakeScreen();
+            }, 1000);
 
-            addRedMessage(
-                "友達になれたね"
-            );
 
-        }, 9000);
+            setTimeout(() => {
 
+                addImage(
+                    "images/room3_map.png",
+                    "system"
+                );
+
+            }, 3000);
+
+        }
+
+        return;
+    }
+
+
+    // ====================================
+    // ②
+    // 正解：9 / きゅう / 九
+    // ====================================
+
+    if (gameStep === 4) {
+
+        if (
+            normalizedText.includes("9") ||
+            normalizedText.includes("きゅう") ||
+            normalizedText.includes("九") ||
+            normalizedText.includes("９")
+        ) {
+
+            gameStep = 5;
+
+
+            setTimeout(() => {
+
+                addMessage(
+                    "いいぞ。③も送れ。",
+                    "system"
+                );
+
+            }, 1000);
+
+        }
+
+        return;
+    }
+
+
+    // ====================================
+    // ③
+    // 正解：7 / なな / 七
+    // ====================================
+
+    if (gameStep === 5) {
+
+        if (
+            normalizedText.includes("7") ||
+            normalizedText.includes("なな") ||
+            normalizedText.includes("七") ||
+            normalizedText.includes("７")
+        ) {
+
+            goToFourthRoom();
+
+        }
+
+        return;
+    }
+
+
+    // ====================================
+    // ④の部屋
+    // 「脱出成功」を待つ
+    // ====================================
+
+    if (gameStep === 6) {
+
+        if (
+            text === "脱出成功"
+        ) {
+
+            escapeSuccess();
+
+        }
+
+        return;
     }
 
 }
