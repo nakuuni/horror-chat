@@ -684,7 +684,7 @@ function showPhotoButton() {
             // =================================
 
             addMessage(
-                "写真を確認している……",
+                "画像を確認している……",
                 "system"
             );
 
@@ -972,7 +972,7 @@ function showPhotoButton() {
                 setTimeout(() => {
 
                     addMessage(
-                        "写真の送信ありがとう。協力に感謝する。",
+                        "協力に感謝する。",
                         "system"
                     );
 
@@ -982,18 +982,12 @@ function showPhotoButton() {
                 setTimeout(() => {
 
                     addMessage(
-                        "ただ家主に見つかってしまったようだな。7分以内に脱出する必要がある。",
+                        "ただ家主に見つかってしまったようだな。館内にある4桁の数字を探して脱出するんだ。",
                         "system"
                     );
 
                 }, 22000);
 
-                addMessage(
-                        "館全体にある4桁の数字を集めて脱出するんだ。",
-                        "system"
-                    );
-
-                }, 22000);
 
                 // 生きて帰れたら
                 setTimeout(() => {
@@ -1081,7 +1075,7 @@ function showPhotoButton() {
             }, 5000);
 
         }
-    
+    );
 
 
     messages.appendChild(
@@ -1106,7 +1100,7 @@ function enteredRoom() {
     setTimeout(() => {
 
         addMessage(
-            "これが館の間取り図だ。",
+            "この部屋を調査しろ。",
             "system"
         );
 
@@ -1117,7 +1111,7 @@ function enteredRoom() {
     setTimeout(() => {
 
         addImage(
-            "images/full_map.png",
+            "images/room_map.png",
             "system"
         );
 
@@ -1128,7 +1122,7 @@ function enteredRoom() {
     setTimeout(() => {
 
         addMessage(
-            "館内の書斎の机にある日記の写真をページ全体を映して送れ。",
+            "この部屋で見つけたものの画像を送れ。",
             "system"
         );
 
@@ -1241,8 +1235,7 @@ function sendMessage() {
         window.noticeCheckFinished &&
         (
             normalizedText.includes("入") ||
-            normalizedText.includes("はい") &&
-            normalizedText != "はい"
+            normalizedText.includes("はい")
         )
     ) {
 
@@ -1265,7 +1258,7 @@ function sendMessage() {
     // ====================================
 
     if (
-        text.includes("脱出") || text.includes("だっしゅつ")
+        text === "脱出成功"
     ) {
 
 
@@ -1288,9 +1281,28 @@ function sendMessage() {
         // 全体図
         // =================================
 
+        setTimeout(() => {
+
+            addImage(
+                "images/full_map.png",
+                "system"
+            );
+
+        }, 3000);
+
+
         // =================================
         // 5秒
         // =================================
+
+        setTimeout(() => {
+
+            addMessage(
+                "無事に脱出したようだな。",
+                "system"
+            );
+
+        }, 5000);
 
 
         // =================================
@@ -1300,11 +1312,11 @@ function sendMessage() {
         setTimeout(() => {
 
             addMessage(
-                "クラ発投票お願いします！",
+                "クラブ発表お願いします！",
                 "system"
             );
 
-        }, 3000);
+        }, 7000);
 
 
         // =================================
@@ -1315,11 +1327,11 @@ function sendMessage() {
         setTimeout(() => {
 
             addLinkMessage(
-                "クラ発の投票はこちら",
+                "クラブ発表の投票はこちら",
                 "https://example.com"
             );
 
-        }, 5000);
+        }, 8000);
 
 
         // =================================
@@ -1331,7 +1343,7 @@ function sendMessage() {
 
             shakeScreen();
 
-        }, 7500);
+        }, 8500);
 
 
         // =================================
@@ -1346,7 +1358,7 @@ function sendMessage() {
                 "友達になれたね"
             );
 
-        }, 8000);
+        }, 9000);
 
     }
 
