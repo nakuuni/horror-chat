@@ -1081,7 +1081,7 @@ function showPhotoButton() {
             }, 5000);
 
         }
-    );
+    
 
 
     messages.appendChild(
