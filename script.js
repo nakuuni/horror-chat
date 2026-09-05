@@ -1006,7 +1006,7 @@ function showPhotoButton() {
 
                     message.innerHTML =
                         "<strong style='color:#ff3333;'>"
-                        + "生きて帰れたら"
+                        + "7分以内に生きて帰れたら"
                         + "</strong>"
                         + "報酬を渡そう。";
 
@@ -1100,7 +1100,7 @@ function enteredRoom() {
     setTimeout(() => {
 
         addMessage(
-            "この部屋を調査しろ。",
+            "館の間取り図だ。",
             "system"
         );
 
@@ -1111,7 +1111,7 @@ function enteredRoom() {
     setTimeout(() => {
 
         addImage(
-            "images/room_map.png",
+            "images/full_map.png",
             "system"
         );
 
@@ -1122,7 +1122,7 @@ function enteredRoom() {
     setTimeout(() => {
 
         addMessage(
-            "この部屋で見つけたものの画像を送れ。",
+            "書斎の机の上にある日記全体の写真を送れ。",
             "system"
         );
 
@@ -1312,7 +1312,7 @@ function sendMessage() {
         setTimeout(() => {
 
             addMessage(
-                "クラブ発表お願いします！",
+                "クラ発投票お願いします！",
                 "system"
             );
 
