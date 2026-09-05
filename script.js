@@ -982,12 +982,18 @@ function showPhotoButton() {
                 setTimeout(() => {
 
                     addMessage(
-                        "ただ家主に見つかってしまったようだな。",
+                        "ただ家主に見つかってしまったようだな。7分以内に脱出する必要がある。",
                         "system"
                     );
 
                 }, 22000);
 
+                addMessage(
+                        "館全体にある4桁の数字を集めて脱出するんだ。",
+                        "system"
+                    );
+
+                }, 22000);
 
                 // 生きて帰れたら
                 setTimeout(() => {
@@ -1122,7 +1128,7 @@ function enteredRoom() {
     setTimeout(() => {
 
         addMessage(
-            "館のどこかにある日記の写真を送れ。",
+            "館内の書斎の机にある日記の写真をページ全体を映して送れ。",
             "system"
         );
 
@@ -1235,7 +1241,8 @@ function sendMessage() {
         window.noticeCheckFinished &&
         (
             normalizedText.includes("入") ||
-            normalizedText.includes("はい")
+            normalizedText.includes("はい") &&
+            normalizedText != "はい"
         )
     ) {
 
