@@ -982,12 +982,20 @@ function showPhotoButton() {
                 setTimeout(() => {
 
                     addMessage(
-                        "ただ家主に見つかってしまったようだな。館内にある4桁の数字を探して脱出するんだ。",
+                        "ただ家主に見つかってしまったようだな。館内にある4桁の数字を探して脱出するんだ。さっき送った間取り図を参考にしろ。",
                         "system"
                     );
 
                 }, 22000);
 
+                setTimeout(() => {
+
+                    addImage(
+                        "images/room_map.png",
+                        "system"
+                    );
+
+                }, 23000);
 
                 // 生きて帰れたら
                 setTimeout(() => {
@@ -1006,7 +1014,7 @@ function showPhotoButton() {
 
                     message.innerHTML =
                         "<strong style='color:#ff3333;'>"
-                        + "7分以内に生きて帰れたら"
+                        + "5分以内に生きて帰れたら"
                         + "</strong>"
                         + "報酬を渡そう。";
 
